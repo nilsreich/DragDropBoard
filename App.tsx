@@ -12,6 +12,7 @@ import {
 } from '@dnd-kit/core';
 
 export default function App() {
+  const [value, setValue] = React.useState('');
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor),
@@ -28,6 +29,20 @@ export default function App() {
     { parent: 'To Do', value: '2x-4', id: crypto.randomUUID() },
     { parent: 'To Do', value: 'x^2-9', id: crypto.randomUUID() },
   ]);
+
+  // Add new Item
+  const addNewItem = (e) => {
+    e.preventDefault();
+    setItems([
+      ...items,
+      {
+        parent: 'To Do',
+        value: value,
+        id: crypto.randomUUID(),
+      },
+    ]);
+    setValue('')
+  };
 
   return (
     <div>
@@ -59,6 +74,14 @@ export default function App() {
           ))}
         </DndContext>
       </div>
+      <form onSubmit={addNewItem}>
+        <input
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          type="text"
+        />
+        <button>add</button>
+      </form>
       <button onClick={() => console.log(items)}>Log ItemArray</button>
     </div>
   );
