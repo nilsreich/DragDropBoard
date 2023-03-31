@@ -10,6 +10,7 @@ export const Droppable = ({ id, children }) => {
     border: '1px solid black',
     padding: '1rem',
     width: '300px',
+    height: '300px',
   };
 
   return (
