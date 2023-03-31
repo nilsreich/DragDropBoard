@@ -4,7 +4,6 @@ import { Draggable } from './Draggable';
 import {
   closestCenter,
   DndContext,
-  KeyboardSensor,
   MouseSensor,
   TouchSensor,
   useSensor,
@@ -14,9 +13,12 @@ import {
 export default function App() {
   const [value, setValue] = React.useState('');
   const sensors = useSensors(
-    useSensor(MouseSensor),
-    useSensor(TouchSensor),
-    useSensor(KeyboardSensor)
+    useSensor(MouseSensor, {
+      activationConstraint: { delay: 100, tolerance: 300 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 100, tolerance: 300 },
+    })
   );
   const style = { display: 'flex', gap: '3rem', marginBottom: '4rem' };
 
@@ -41,7 +43,16 @@ export default function App() {
         id: crypto.randomUUID(),
       },
     ]);
-    setValue('')
+    setValue('');
+  };
+
+  // Remove Item
+  const remove = (id) => {
+    setItems(
+      items.filter((item) => {
+        return item.id !== id;
+      })
+    );
   };
 
   return (
@@ -64,7 +75,11 @@ export default function App() {
               {items.map((item) => {
                 if (item.parent === id) {
                   return (
-                    <Draggable key={item.id} id={item.id}>
+                    <Draggable
+                      key={item.id}
+                      id={item.id}
+                      callback={() => remove(item.id)}
+                    >
                       {item.value}
                     </Draggable>
                   );
