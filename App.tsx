@@ -6,6 +6,7 @@ import {
   DndContext,
   MouseSensor,
   TouchSensor,
+  KeyboardSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -14,10 +15,17 @@ export default function App() {
   const [value, setValue] = React.useState('');
   const sensors = useSensors(
     useSensor(MouseSensor, {
-      activationConstraint: { delay: 100, tolerance: 300 },
+      activationConstraint: { delay: 100, tolerance: 10 },
     }),
     useSensor(TouchSensor, {
-      activationConstraint: { delay: 100, tolerance: 300 },
+      activationConstraint: { delay: 100, tolerance: 10 },
+    }),
+    useSensor(KeyboardSensor, {
+      keyboardCodes: {
+        start: ['Space'],
+        cancel: ['Escape'],
+        end: ['Space'],
+      },
     })
   );
   const style = { display: 'flex', gap: '3rem', marginBottom: '4rem' };
@@ -46,15 +54,6 @@ export default function App() {
     setValue('');
   };
 
-  // Remove Item
-  const remove = (id) => {
-    setItems(
-      items.filter((item) => {
-        return item.id !== id;
-      })
-    );
-  };
-
   return (
     <div>
       <div style={style}>
@@ -73,17 +72,21 @@ export default function App() {
             <Droppable key={id} id={id}>
               <div>{id}</div>
               {items.map((item) => {
-                if (item.parent === id) {
-                  return (
-                    <Draggable
-                      key={item.id}
-                      id={item.id}
-                      callback={() => remove(item.id)}
-                    >
-                      {item.value}
-                    </Draggable>
-                  );
-                }
+                return item.parent === id ? (
+                  <Draggable
+                    key={item.id}
+                    id={item.id}
+                    callback={() =>
+                      setItems(
+                        items.filter((current) => {
+                          return current.id !== item.id;
+                        })
+                      )
+                    }
+                  >
+                    {item.value}
+                  </Draggable>
+                ) : null;
               })}
             </Droppable>
           ))}
