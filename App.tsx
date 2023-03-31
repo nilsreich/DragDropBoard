@@ -19,31 +19,27 @@ export default function App() {
   );
   const style = { display: 'flex', gap: '3rem', marginBottom: '4rem' };
 
-  // Drop an Item
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    setItems(
-      items.map((item) =>
-        item.id === active.id ? { ...item, parent: over.id } : item
-      )
-    );
-  };
-
   // DropZones
-  const containers = ['ToDO', 'inProgress', 'Done'];
+  const containers = ['To Do', 'In Progress', 'Done'];
 
   // Items
   const [items, setItems] = React.useState([
-    { parent: 'ToDO', value: 'x-3', id: crypto.randomUUID() },
-    { parent: 'ToDO', value: '2x-4', id: crypto.randomUUID() },
-    { parent: 'ToDO', value: 'x^2-9', id: crypto.randomUUID() },
+    { parent: 'To Do', value: 'x-3', id: crypto.randomUUID() },
+    { parent: 'To Do', value: '2x-4', id: crypto.randomUUID() },
+    { parent: 'To Do', value: 'x^2-9', id: crypto.randomUUID() },
   ]);
 
   return (
     <div>
       <div style={style}>
         <DndContext
-          onDragEnd={handleDragEnd}
+          onDragEnd={(e) =>
+            setItems(
+              items.map((item) =>
+                item.id === e.active.id ? { ...item, parent: e.over.id } : item
+              )
+            )
+          }
           sensors={sensors}
           collisionDetection={closestCenter}
         >
