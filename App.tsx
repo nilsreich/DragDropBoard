@@ -30,12 +30,8 @@ export default function App() {
     const { active, over } = event;
     const temp = [...items];
     let index = temp.findIndex((item) => item.id === active.id);
-    try {
-      temp[index].parent = over.id;
-      setItems(temp);
-    } catch {
-      null;
-    }
+    temp[index].parent = over.id;
+    setItems(temp);
   };
 
   return (
